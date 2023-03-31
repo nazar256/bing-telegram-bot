@@ -8,10 +8,8 @@ ENV BOT_TOKEN_FILE=/run/secrets/bot_token.txt
 
 WORKDIR /app
 COPY . /app
-RUN mkdir -p /app && \
-    apk add git && \
-    python3 -m pip install EdgeGPT --upgrade \
+RUN python3 -m pip install EdgeGPT --upgrade \
     pip install -r requirements.txt && \
-    pip install pyTelegramBotAPI
+    pip install aiohttp pyTelegramBotAPI
 
 CMD ["python", "bingbot.py"]
