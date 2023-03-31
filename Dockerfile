@@ -5,6 +5,7 @@ ARG BUILDPLATFORM
 
 ENV COOKIE_FILE=/run/secrets/cookie.json
 ENV BOT_TOKEN_FILE=/run/secrets/bot_token.txt
+ENV CONVERSATION_STYLE_TYPE=creative
 
 WORKDIR /app
 COPY . /app

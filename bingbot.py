@@ -10,6 +10,7 @@ from EdgeGPT import Chatbot
 with open(os.getenv('BOT_TOKEN_FILE'), 'r') as file:
     BOT_TOKEN = file.read()
 bot = AsyncTeleBot(BOT_TOKEN)
+style = os.getenv('CONVERSATION_STYLE_TYPE')
 
 # Add your telegram id to the list without @ symbol
 authorized_id = os.getenv('AUTHORIZED_IDS').split(",")
@@ -18,7 +19,7 @@ authorized_id = os.getenv('AUTHORIZED_IDS').split(",")
 async def bingChat(prompt, is_ref=False):
     # Update your cookies.json path here
     gbot = Chatbot(cookiePath=os.getenv('COOKIE_FILE'))
-    response_dict = await gbot.ask(prompt=prompt)
+    response_dict = await gbot.ask(prompt=prompt, )
     if is_ref:
         return response_dict['item']['messages'][1]["adaptiveCards"][0]["body"][0]["text"]
     return re.sub(r'\[\^\d\^\]', '', response_dict['item']['messages'][1]['text'])
@@ -61,6 +62,9 @@ async def start(message):
         print("Exception happened")
         print(e)
 
+@bot.message_handler(func=lambda m: True)
+async def input(message):
+    await ask(message)
 
 async def main():
     await bot.infinity_polling()
