@@ -1,4 +1,5 @@
 import asyncio
+import os
 import re
 
 from telebot.async_telebot import AsyncTeleBot
@@ -6,16 +7,17 @@ from telebot.async_telebot import AsyncTeleBot
 from EdgeGPT import Chatbot
 
 # Insert your Bot token
-BOT_TOKEN = '<INSERT YOUR TELEGRAM BOT TOKEN>'
+with open(os.getenv('BOT_TOKEN_FILE'), 'r') as file:
+    BOT_TOKEN = file.read()
 bot = AsyncTeleBot(BOT_TOKEN)
 
 # Add your telegram id to the list without @ symbol
-authorized_id = ['<INSERT YOUR TELEGRAM USER NAME, NOT THE DISPLAY NAME>']
+authorized_id = os.getenv('AUTHORIZED_IDS').split(",")
 
 
 async def bingChat(prompt, is_ref=False):
     # Update your cookies.json path here
-    gbot = Chatbot(cookiePath='./cookies.json')
+    gbot = Chatbot(cookiePath=os.getenv('COOKIE_FILE'))
     response_dict = await gbot.ask(prompt=prompt)
     if is_ref:
         return response_dict['item']['messages'][1]["adaptiveCards"][0]["body"][0]["text"]

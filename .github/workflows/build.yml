@@ -1,0 +1,39 @@
+name: build
+
+on:
+  push:
+    branches:
+      - 'main'
+env:
+  DOCKERHUB_USERNAME: dockerforclouds
+
+jobs:
+  buildx:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v3
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+        with:
+          platforms: linux/amd64,linux/arm/v7,linux/arm64/v8,linux/386,linux/ppc64le,linux/s390x
+      -
+        name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ env.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      -
+        name: Build
+        uses: docker/build-push-action@v3
+        with:
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: |
+            dockerforclouds/bing-telegram-bot:${{ github.sha }}
+            dockerforclouds/bing-telegram-bot:latest
+          build-args: |
+            VERSION=${{ env.GITHUB_SHA }}
+          context: .
